@@ -7,6 +7,7 @@
   </div>
 </template>
 
+
 <script>
 import UserFiles from './components/UserFiles.vue';
 import MainContent from './components/MainContent.vue';

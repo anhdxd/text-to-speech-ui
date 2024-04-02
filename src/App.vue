@@ -27,6 +27,8 @@ export default {
         { name: 'file1.txt', size: '2MB', dateModified: '2022-01-01' },
         { name: 'file2.txt', size: '3MB', dateModified: '2022-01-02' },
         { name: 'file3.txt', size: '1MB', dateModified: '2022-01-03' },
+        { name: 'file4.txt', size: '2MB', dateModified: '2022-01-01' },
+        { name: 'file5.txt', size: '3MB', dateModified: '2022-01-02' },
       ],
     }
   },

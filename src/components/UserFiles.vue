@@ -63,6 +63,18 @@ export default {
 
 .no-bullets {
   list-style-type: none;
+  padding-left: 10px;
+  max-height: max-content;
+  overflow-y: auto;
+}
+.full-width-button {
+  width: 90%;
+  height: 50px;
+  background-color: #edeff1;
+  color: rgb(0,120,212);
+  border: none;
+  cursor: pointer;
+  margin-bottom: 3px;
 }
 
 </style>

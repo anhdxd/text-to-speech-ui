@@ -7,30 +7,30 @@
             <button class="btn-file">Save</button>
         </div>
         <div class="row">
-            <button class="btn-audio btn-play">&#9658;</button>
+            <button class="btn-audio btn-play" @mousedown.prevent="playSelectedText">&#9658;</button>
             <button class="btn-audio btn-pause">&#9616;&#9616;</button>
-            <input class="audio-range" type="range" min="0" max="100" step="1" v-model="audioTime" />
+            <input class="audio-range" type="range" min="0" max="totalAudioTime" step="1" v-model="audioTime" />
             <select>
                 <option>Frequency 1</option>
                 <option>Frequency 2</option>
             </select>
         </div>
         <div class="row">
-            <textarea placeholder="Enter text here..."></textarea>
+            <textarea id="input_area" placeholder="Enter text here..." v-model="inputText"></textarea>
         </div>
         <!-- popup show select add file -->
         <div v-if="showModal" class="modal" @click.self="showModal = false">
             <div class="modal-content">
-  <button @click="addFolder">
-    <i class="fas fa-folder-plus"></i> Thêm thư mục
-  </button>
-  <button @click="addFile">
-    <i class="fas fa-file"></i> Thêm file
-  </button>
-  <button @click="showModal = false">
-    <i class="fas fa-times"></i> Đóng
-  </button>
-</div>
+                <button @click="addFolder">
+                    Thêm thư mục
+                </button>
+                <button @click="addFile">
+                    Thêm file
+                </button>
+                <button @click="showModal = false">
+                    Đóng
+                </button>
+            </div>
         </div>
         <!-- end popup select add file -->
     </div>
@@ -43,6 +43,10 @@ export default {
         return {
             audioTime: 0,
             showModal: false,
+            totalAudioTime: 100,
+            audioInterval: null,
+            selectedText: '', // selected text in textarea
+            inputText: '', // text in textarea
         }
     },
     methods: {
@@ -59,6 +63,26 @@ export default {
         },
         deleteFolder(index) {
             this.files.splice(index, 1);
+        },
+        playSelectedText() {
+            // function call api text to speech
+            const textarea = document.getElementById('input_area');
+            if (textarea.selectionStart !== textarea.selectionEnd) {
+                this.selectedText = this.inputText.substring(textarea.selectionStart, textarea.selectionEnd);
+                console.log(this.selectedText);
+
+                // Call api to get speech
+                const audioDuration = callTextToSpeechAPI(this.selectedText);
+                // Update audioTime every second
+                this.totalAudioTime = audioDuration;
+                this.audioInterval = setInterval(() => {
+                    if (this.audioTime < this.totalAudioTime) {
+                        this.audioTime++;
+                    } else {
+                        clearInterval(this.audioInterval);
+                    }
+                }, 1000);
+            }
         }
     }
 }
@@ -135,42 +159,41 @@ export default {
     height: 40px;
     text-align: center;
 }
-
 </style>
 
 <style popup>
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  flex-direction: column;
-  display: flex;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    flex-direction: column;
+    display: flex;
 
 }
 
 .modal-content button {
-  background-color: #edeff1;
-  color: rgb(0, 120, 212);
-  border: none;
-  cursor: pointer;
-  margin-right: 10px;
-  width: 200px;
-  height: 40px;
-  margin: 5px;
-  font-size: medium;
-  font-weight: bold;
+    background-color: #edeff1;
+    color: rgb(0, 120, 212);
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    width: 200px;
+    height: 40px;
+    margin: 5px;
+    font-size: medium;
+    font-weight: bold;
 }
 </style>
